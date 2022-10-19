@@ -306,13 +306,14 @@ jobs:
     if: always()
     steps:
       - name: check preiovus result
-        if: need.check-commit-status.result == 'failure'
+        if: needs.check-commit-status.result == 'failure'
         run: |
           echo "Failed: version will be 2.1.0.dev..."
       - name: check again
-        if: need.check-commit-status.result == 'success'
+        if: needs.check-commit-status.result == 'success'
         run: |
           echo "Success: version will be 2.1.something"
+
   python-build-check:
     name: 🐍 Python build & checks
     needs: [reuse, c-lint, lua-lint]
