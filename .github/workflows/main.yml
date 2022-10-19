@@ -1,15 +1,15 @@
 name: zenroom
-on:
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'examples/**'
-      - '*.md'
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on: push
+#  push:
+#    paths-ignore:
+#      - 'docs/**'
+#      - 'examples/**'
+#      - '*.md'
+#    branches:
+#    - master
+#  pull_request:
+#    branches:
+#    - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -242,6 +242,77 @@ jobs:
           pip3 install .[test]
       - run: pytest -s tests
 
+  linux-crypto-check:
+    name: 🐧 Linux crypto tests
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt install zsh jq meson
+          make linux
+          make check-crypto
+
+  macosx-crypto-check:
+    name: 🍎 macos crypto tests
+    runs-on: macos-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          pip3 install meson ninja
+          make osx
+          make check-osx
+
+  check-commit-status:
+    name: 👷 check commit status
+    runs-on: ubuntu-latest
+    needs: [rust-build-check, go-build-check, meson-build, linux-crypto-check, macosx-crypto-check]
+    if: ${{ always() && github.event_name == 'push' }} # github.ref_name == 'master'
+    steps:
+      - name: Failure
+        id: failure
+        if: ${{ contains(join(needs.*.result, ','), 'failure') || contains(join(needs.*.result, ','), 'skipped') }}
+        run: exit 1
+      - name: Success
+        if: steps.failure.conclusion == 'skipped'
+        run: |
+          success=0; i=1
+          while [ true ]; do
+            h=`git log HEAD~$i -1 --pretty=format:"%H"`
+            i=$((i+1))
+            url="https://api.github.com/repos/${{ github.repository }}/commits/$h/status"
+            state=`curl -H "Accept: application/vnd.github+json" $url | jq -r '.state'`
+            if [[ $state == "failure" || $h == "b675846b230ea0d012d969a9f11782d4046b0094" ]]; then
+              echo $h
+              echo "failed"
+              exit 1
+            fi
+            if [[ $state == "success" ]]; then
+              success=$((success+1))
+              if [[ $success == 3 ]]; then
+                exit 0
+              fi
+            fi
+          done
+
+  teset-version:
+    name: 🧪 what version to use
+    runs-on: ubuntu-latest
+    needs: check-commit-status
+    if: always()
+    steps:
+      - name: check preiovus result
+        if: need.check-commit-status.result == 'failure'
+        run: |
+          echo "Failed: version will be 2.1.0.dev..."
+      - name: check again
+        if: need.check-commit-status.result == 'success'
+        run: |
+          echo "Success: version will be 2.1.something"
   python-build-check:
     name: 🐍 Python build & checks
     needs: [reuse, c-lint, lua-lint]
@@ -309,33 +380,6 @@ jobs:
       with:
         path: ./bindings/python3/dist/*.tar.gz
 
-  linux-crypto-check:
-    name: 🐧 Linux crypto tests
-    if: always()
-    needs: [meson-build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt install zsh jq meson
-          make linux
-          make check-crypto
-
-  macosx-crypto-check:
-    name: 🍎 macos crypto tests
-    runs-on: macos-latest
-    if: always()
-    needs: [meson-build]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: |
-          pip3 install meson ninja
-          make osx
-          make check-osx
-
   npm-release:
     name: 📦 npm release
     runs-on: ubuntu-latest
@@ -370,3 +414,37 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+  create-commit-status:
+    name: 🏆 Commit status
+    needs: [rust-build-check, go-build-check, linux-crypto-check, macosx-crypto-check, npm-release, pypi-release]
+    if: ${{ always() && github.ref_name == 'master' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failure
+        id: failure
+        if: ${{ contains(join(needs.*.result, ','), 'failure') || contains(join(needs.*.result, ','), 'skipped') }}
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+          "context": "Zenroom",
+          "state": "failure",
+          "description": "Zenroom tests, build or release failed",
+          "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'
+      - name: Success
+        if: steps.failure.conclusion == 'skipped'
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+          "context": "Zenroom",
+          "state": "success",
+          "description": "Zenroom tests, build and release secceeded",
+          "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'
