@@ -286,7 +286,7 @@ jobs:
         id: success
         if: steps.failure.conclusion == 'skipped'
         run: |
-          success=0; i=1
+          success=1; i=1
           while [ true ]; do
             h=`git log HEAD~$i -1 --pretty=format:"%H"`
             i=$((i+1))
