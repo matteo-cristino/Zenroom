@@ -422,7 +422,7 @@ jobs:
             next_version=`echo ${zenroom_npm_version} | awk -F. -v OFS=. '{$NF=$NF+1; print}'`
           fi
           echo $next_version
-          yarn version --new-version ${{ next_version }} --no-git-tag-version
+          yarn version --new-version ${next_version} --no-git-tag-version
           npm publish . --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
