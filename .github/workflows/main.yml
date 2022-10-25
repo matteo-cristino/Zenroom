@@ -274,7 +274,7 @@ jobs:
     needs: [rust-build-check, go-build-check, meson-build, js-build-check, linux-crypto-check, macosx-crypto-check]
     outputs:
       output: ${{ steps.success.outputs.test }}
-    if: ${{ always() && github.event_name == 'push' }} # github.ref_name == 'master'
+    if: ${{ github.event_name == 'push' }} # github.ref_name == 'master' &&
     steps:
       - uses: actions/checkout@v3
         with:
@@ -310,7 +310,6 @@ jobs:
     name: 🐍 Python build & checks
     needs: [check-commit-status]
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event_name == 'push' }} # && github.ref_name == 'master'
     strategy:
       fail-fast: false
       matrix:
@@ -351,7 +350,7 @@ jobs:
             next_version=`echo ${zenroom_pip_version} | awk -F. -v OFS=. '{$NF=$NF+1; print}'`
           fi
           echo $next_version
-          sed -ie "s/version=get_python_version()/version=${next_version}/" bindings/python3/setup.py
+          sed -ie "s/version=get_python_version()/version=\'${next_version}\'/" bindings/python3/setup.py
       - name: Build wheels
         env:
           CIBW_BUILD: cp${{ matrix.python-version }}-${{ matrix.platform_id }}
@@ -395,8 +394,7 @@ jobs:
   npm-release:
     name: 📦 npm release
     runs-on: ubuntu-latest
-    needs: check-commit-status
-    if: ${{ github.event_name == 'push' }} # github.ref_name == 'master' &&
+    needs: [check-commit-status]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
@@ -434,7 +432,6 @@ jobs:
 
   pypi-release:
     name: 📦 PyPI release
-    if: ${{ github.ref_name == 'master' && github.event_name == 'push' }}
     needs: [python-sdist]
     runs-on: ubuntu-latest
     steps:
@@ -449,8 +446,7 @@ jobs:
 
   create-commit-status:
     name: 🏆 Commit status
-    needs: [check-commit-status] #, npm-release, pypi-release
-    if: ${{ always() && github.event_name == 'push' }} # && github.ref_name == 'master' 
+    needs: [check-commit-status] # [npm-release, pypi-release]
     runs-on: ubuntu-latest
     steps:
       - name: Failure
