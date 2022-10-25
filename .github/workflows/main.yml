@@ -340,9 +340,10 @@ jobs:
           pip install zenroom
           zenroom_pip_version=`pip show zenroom | grep "Version:" | cut -d " " -f 2`
           repo_version=`cat VERSION`
-          latest_version=`echo "${latest_version}\n${repo_version}" | sort -V | tail -1 | cut -c3-`
-          echo $latest_version
+          latest_version=`echo "${zenroom_pip_version}\n${repo_version}" | sort -V | tail -n 1 | cut -c3-`
+          echo $zenroom_pip_version
           echo $repo_version
+          echo $latest_version
           if [[ ${repo_version} == ${latest_version} ]]; then
             next_version=${repo_version}
           else
