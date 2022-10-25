@@ -209,6 +209,7 @@ jobs:
             ./bindings/javascript/package.json
             ./bindings/javascript/README.md
             ./bindings/javascript/dist/
+            ./VERSION
       - name: 🧪 test bindings node-${{ matrix.node-version }}
         run: yarn test
       - name: 🔐 check crypto with node-${{ matrix.node-version }}
@@ -350,7 +351,7 @@ jobs:
             next_version=`echo ${zenroom_pip_version} | awk -F. -v OFS=. '{$NF=$NF+1; print}'`
           fi
           echo $next_version
-          sed -ie 's/version=get_python_version()/version=${ next_version }/' bindings/python3/setup.py
+          sed -ie "s/version=get_python_version()/version=${next_version}/" bindings/python3/setup.py
       - name: Build wheels
         env:
           CIBW_BUILD: cp${{ matrix.python-version }}-${{ matrix.platform_id }}
