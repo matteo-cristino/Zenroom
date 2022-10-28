@@ -409,10 +409,15 @@ jobs:
       #  with:
       #    name: javascript-artifact
       #    path: .
+      - uses: mymindstorm/setup-emsdk@v11
+        with:
+          version: ${{ env.EM_VERSION }}
       - name: Install and build
         run: |
           yarn
           yarn build
+        env:
+          EMSCRIPTEN: ${{ env.EMSDK }}/upstream/emscripten
       - name: Stable release
         if: ${{ needs.check-commit-status.outputs.output == 'Success' }}
         run: npx semantic-release
