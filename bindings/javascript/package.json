@@ -117,7 +117,6 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/changelog",
     "@semantic-release/github",
     "@semantic-release/npm",
     "@semantic-release/git"
@@ -127,14 +126,12 @@
       "next"
     ],
     "prepare": [
-      "@semantic-release/changelog",
       "@semantic-release/npm",
       {
         "path": "@semantic-release/git",
         "assets": [
           "package.json",
-          "yarn.lock",
-          "CHANGELOG.md"
+          "yarn.lock"
         ],
         "message": "chore(release): 🚀 ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
