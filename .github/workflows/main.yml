@@ -411,7 +411,8 @@ jobs:
       #    path: .
       - uses: mymindstorm/setup-emsdk@v11
         with:
-          version: ${{ env.EM_VERSION }}
+          version: latest
+      - run: sudo apt-get update; sudo apt-get install zsh meson ninja-build
       - name: Install and build
         run: |
           yarn
