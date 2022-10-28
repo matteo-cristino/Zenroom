@@ -423,7 +423,7 @@ jobs:
         if: ${{ needs.check-commit-status.outputs.output == 'Success' }}
         run: npx semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - if: ${{ needs.check-commit-status.outputs.output == 'Failure' }}
         run: npm publish . --tag next
@@ -439,6 +439,10 @@ jobs:
 #        with:
 #          name: artifact
 #          path: dist
+#      - name: Create python semantic release
+#        uses: relekang/python-semantic-release@master
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
 #      - uses: pypa/gh-action-pypi-publish@release/v1
 #        with:
 #          user: __token__
