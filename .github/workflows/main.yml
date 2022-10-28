@@ -421,7 +421,7 @@ jobs:
           EMSCRIPTEN: ${{ env.EMSDK }}/upstream/emscripten
       - name: Stable release
         if: ${{ needs.check-commit-status.outputs.output == 'Success' }}
-        run: npx semantic-release --dry-run
+        run: npx semantic-release --dry-run --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
