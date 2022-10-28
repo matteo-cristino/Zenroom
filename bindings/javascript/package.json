@@ -5,7 +5,7 @@
   "main": "dist/main/index.js",
   "typings": "dist/main/index.d.ts",
   "module": "dist/module/index.js",
-  "repository": "https://github.com/dyne/zenroom.git",
+  "repository": "https://github.com/matteo-cristino/zenroom.git",
   "homepage": "https://dev.zenroom.org/#/pages/javascript",
   "author": "Puria Nafisi Azizi <puria@dyne.org>",
   "license": "AGPL-3.0",
