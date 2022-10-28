@@ -129,7 +129,7 @@
       {
 	"path": "@semantic-release/npm",
 	"npmPublish": false
-      }
+      },
       {
         "path": "@semantic-release/git",
         "assets": [
