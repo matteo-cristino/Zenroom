@@ -124,7 +124,7 @@
   ],
   "release": {
     "branches": [
-      "ci/test"
+      "next"
     ],
     "prepare": [
       "@semantic-release/changelog",
