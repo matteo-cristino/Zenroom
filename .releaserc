@@ -1,7 +1,7 @@
 {
   "repositoryUrl": "git@github.com:matteo-cristino/Zenroom.git",
   "ci": false,
-  "dryRun": false,
+  "dryRun": fals,
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
