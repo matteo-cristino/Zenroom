@@ -12,14 +12,15 @@ jobs:
   verison:
     name: version
     runs-on: ubuntu-latest
-    run: |
-      echo ""
-      echo "##############################"
-      echo ${{ github.ref }}
-      echo "------------------------------"
-      echo ${{ github.ref_name }}
-      echo "##############################"
-      echo ""
+    steps:
+      - run: |
+          echo ""
+          echo "##############################"
+          echo ${{ github.ref }}
+          echo "------------------------------"
+          echo ${{ github.ref_name }}
+          echo "##############################"
+          echo ""
 
 #  python-build-check:
 #    name: 🐍 Python build & checks
