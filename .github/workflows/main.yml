@@ -1,12 +1,12 @@
 name: zenroom
 on:
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'examples/**'
-      - '*.md'
-    branches:
-    - master
+#  push:
+#    paths-ignore:
+#      - 'docs/**'
+#      - 'examples/**'
+#      - '*.md'
+#    branches:
+#    - master
   pull_request:
     branches:
     - master
