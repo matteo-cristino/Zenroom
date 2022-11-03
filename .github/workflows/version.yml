@@ -18,4 +18,6 @@ jobs:
       - name: Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
+        run: |
+          npx semantic-release
+          jq -r .version ./package.json

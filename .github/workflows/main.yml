@@ -9,7 +9,7 @@ on:
 #    - master
   pull_request:
     branches:
-    - master
+    - boh
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
