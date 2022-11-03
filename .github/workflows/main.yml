@@ -1,6 +1,8 @@
 name: zenroom
 on:
-#  push:
+  push:
+    tags:
+      - '*'
 #    paths-ignore:
 #      - 'docs/**'
 #      - 'examples/**'
