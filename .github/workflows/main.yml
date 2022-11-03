@@ -2,7 +2,7 @@ name: zenroom-releases
 on:
   push:
     tags:
-      - '*'
+      - v*
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
