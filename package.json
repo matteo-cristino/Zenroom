@@ -1,24 +1,24 @@
 {
     "name": "Zenroom",
-    "version": "1.1.0",
+    "version": "2.1.0",
     "description": "Secure VM for smart-contract execution in human-like language",
     "author": "dyne",
     "license": "AGPL-3.0",
     "repository": {
-	"type": "git",
-	"url": "git+https://github.com/dyne/zenroom.git"
-    },    
+        "type": "git",
+        "url": "git+https://github.com/dyne/zenroom.git"
+    },
     "bugs": {
-	"url": "https://github.com/dyne/zenroom/issues"
+        "url": "https://github.com/dyne/zenroom/issues"
     },
     "homepage": "https://github.com/dyne/zenroom#readme",
     "keywords": [],
     "devDependencies": {
-	"@semantic-release/changelog": "^6.0.1",
-	"@semantic-release/commit-analyzer": "^9.0.2",
-	"@semantic-release/exec": "^6.0.3",
-	"@semantic-release/git": "^10.0.1",
-	"@semantic-release/release-notes-generator": "^10.0.3",
-	"semantic-release": "^19.0.5"
+        "@semantic-release/changelog": "^6.0.1",
+        "@semantic-release/commit-analyzer": "^9.0.2",
+        "@semantic-release/exec": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/release-notes-generator": "^10.0.3",
+        "semantic-release": "^19.0.5"
     }
 }
