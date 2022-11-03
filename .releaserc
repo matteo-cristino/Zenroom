@@ -17,13 +17,6 @@
       {
         "npmPublish": false
       }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["CHANGELOG.md", "package.json"],
-        "message": "chore(release): Woohoo ${nextRelease.version}"
-      }
     ]
   ]
 }
