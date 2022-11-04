@@ -34,6 +34,7 @@ jobs:
       - run: |
           echo ""
           echo "##############################"
-          git describe --tags `git rev-list --tags --max-count=1`
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo ${tag:1}
           echo "##############################"
           echo ""
