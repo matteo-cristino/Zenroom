@@ -16,7 +16,7 @@ jobs:
       - run: yarn
       - name: Version
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx semantic-release
 
@@ -26,13 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: master
-          fetch-depth: 0
       - run: |
           echo ""
           echo "##############################"
-          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          tag=$(git describe --tags --abbrev=0)
           echo ${tag:1}
           echo "##############################"
           echo ""
