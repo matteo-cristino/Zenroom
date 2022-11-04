@@ -13,14 +13,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - name: Install dependencies
-        run: yarn
       - name: Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npx semantic-release
-          jq -r .version ./package.json
 
   print-verison:
     name: Print version
@@ -34,6 +31,7 @@ jobs:
       - run: |
           echo ""
           echo "##############################"
-          git describe --tags `git rev-list --tags --max-count=1`
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo ${tag:1}
           echo "##############################"
           echo ""
