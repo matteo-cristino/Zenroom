@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
+      - run: yarn
       - name: Version
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
