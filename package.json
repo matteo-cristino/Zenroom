@@ -1,6 +1,6 @@
 {
-    "projectname": "Zenroom",
-    "ptojectversion": "2.1.0",
+    "name": "Zenroom",
+    "version": "2.1.0",
     "description": "Secure VM for smart-contract execution in human-like language",
     "author": "dyne",
     "license": "AGPL-3.0",
