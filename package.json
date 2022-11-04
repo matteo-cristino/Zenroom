@@ -11,5 +11,12 @@
     "bugs": {
         "url": "https://github.com/dyne/zenroom/issues"
     },
-    "homepage": "https://github.com/dyne/zenroom#readme"
+    "homepage": "https://github.com/dyne/zenroom#readme",
+    "keywords": [],
+    "devDependencies": {
+        "@semantic-release/changelog": "^6.0.1",
+        "@semantic-release/commit-analyzer": "^9.0.2",
+        "@semantic-release/release-notes-generator": "^10.0.3",
+        "semantic-release": "^19.0.5"
+    }
 }
