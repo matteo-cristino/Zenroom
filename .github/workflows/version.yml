@@ -21,3 +21,17 @@ jobs:
         run: |
           npx semantic-release
           jq -r .version ./package.json
+
+  print-verison:
+    name: Print version
+    needs: [version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo ""
+          echo "##############################"
+          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo $tag
+          echo "##############################"
+          echo ""

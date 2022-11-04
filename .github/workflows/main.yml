@@ -1,27 +1,12 @@
-name: zenroom-releases
-on:
-  push:
-    tags:
-      - v*
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
-  cancel-in-progress: true
-
-jobs:
-  verison:
-    name: version
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo ""
-          echo "##############################"
-          echo ${{ github.ref }}
-          echo "------------------------------"
-          echo ${{ github.ref_name }}
-          echo "##############################"
-          echo ""
-
+#name: zenroom-releases
+#on:
+#  push:
+#    tags:
+#      - v*
+#
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref_name }}
+#  cancel-in-progress: true
 #  python-build-check:
 #    name: 🐍 Python build & checks
 #    runs-on: ${{ matrix.os }}
