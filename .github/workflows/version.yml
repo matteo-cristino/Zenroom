@@ -28,10 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: master
+          fetch-depth: 0
       - run: |
           echo ""
           echo "##############################"
-          tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo $tag
+          git describe --tags `git rev-list --tags --max-count=1`
           echo "##############################"
           echo ""
