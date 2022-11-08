@@ -84,191 +84,191 @@ jobs:
       run: |
         luacheck --config .luacheckrc --std lua54 .
 
-  meson-build:
-    name: 🥷 meson/ninja build
-    needs: [reuse, c-lint, lua-lint]
-    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_MESON')"
-    strategy:
-      matrix:
-        compiler: [clang-9, clang-10, clang-11, gcc-7, gcc-8, gcc-9, gcc-10]
-      fail-fast: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - name: Install compiler and dependencies
-        run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get install --force-yes ${{ matrix.compiler }}
-          sudo apt-get install --force-yes cmake vim zsh luajit lua-cjson ccache
-          pip3 install meson ninja
-      - uses: hendrikmuhs/ccache-action@v1.2
-      - run: make meson-ccache && ninja -C meson
-        env:
-          CC: ${{ matrix.compiler }}
-      - run: make meson-test
-
-  linux-crypto-check:
-    name: 🐧 Linux crypto tests
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt install zsh jq meson
-          make linux
-          make check-crypto
-
-  macosx-crypto-check:
-    name: 🍎 macos crypto tests
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: |
-          pip3 install meson ninja
-          make osx
-          make check-osx
-
-  go-build-check:
-    name: 🐹 go build & checks
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_GO')"
-    strategy:
-      matrix:
-        go: ['1.13', '1.14', '1.15', '1.16', '1.19']
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: ${{ matrix.go }}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: |
-          pip3 install meson ninja
-          sudo apt-get install --force-yes zsh
-      - run: make linux-go
-      - run: cp meson/libzenroom.so bindings/golang/zenroom/lib
-      - name: 🧪 test bindings go-${{ matrix.go }}
-        working-directory: bindings/golang/zenroom
-        run: make test
-      - name: 🔐 check crypto with go-${{ matrix.go }}
-        run: make check-go
-
-  rust-build-check:
-    name: 🦀 rust build & checks
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_RUST')"
-    strategy:
-      matrix:
-        rust: ['stable', 'nightly']
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: ${{ matrix.rust }}
-      - run: |
-          pip3 install meson ninja
-          sudo apt-get install --force-yes zsh
-      - run: make linux-rust
-      - name: 🧪 test bindings rust-${{ matrix.rust }}
-        working-directory: bindings/rust
-        run: cargo test
-      - name: 🔐 check crypto with rust-${{ matrix.rust }}
-        run: make check-rs
-
-  cortex-m-build-check:
-    name: 📟 cortex-m build & checks
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'run cortex') || contains(github.event.head_commit.message, 'run cortex') }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: numworks/setup-arm-toolchain@2021-10
-      - run: sudo apt install zsh qemu-system-arm
-      - name: Download cmsis
-        run: |
-          curl -LO https://github.com/ARM-software/CMSIS_5/archive/refs/tags/5.7.0.tar.gz
-          tar xvf 5.7.0.tar.gz -C lib
-          mv lib/CMSIS_5-5.7.0 lib/cmsis
-      - run: make cortex-arm
-      - name: 🔐 check crypto with cortex-m
-        run: make check-cortex-m
-
-  js-build-check:
-    name: 🐯 js build & checks
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_JS')"
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-    env:
-      EM_VERSION: latest
-    defaults:
-      run:
-        working-directory: bindings/javascript
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - uses: mymindstorm/setup-emsdk@v11
-        with:
-          version: ${{ env.EM_VERSION }}
-      - run: sudo apt-get update; sudo apt-get install zsh meson ninja-build
-      - run: yarn
-      - run: yarn build
-        env:
-          EMSCRIPTEN: ${{ env.EMSDK }}/upstream/emscripten
-      - if: ${{ matrix.node-version == '16.x' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: javascript-artifact
-          path: |
-            ./bindings/javascript/CHANGELOG.md
-            ./bindings/javascript/LICENSE
-            ./bindings/javascript/package.json
-            ./bindings/javascript/README.md
-            ./bindings/javascript/dist/
-      - name: 🧪 test bindings node-${{ matrix.node-version }}
-        run: yarn test
-      - name: 🔐 check crypto with node-${{ matrix.node-version }}
-        working-directory: ./
-        run: make check-js
-
-  python-check:
-    name: 🐍 Python checks
-    needs: [reuse, c-lint, lua-lint]
-    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_PY') && github.event_name == 'pull_request'"
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        working-directory: bindings/python3
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10"]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: sudo apt install --force-yes zsh
-        if: runner.os == 'Linux'
-      - run: brew install zsh
-        if: runner.os == 'Darwin'
-      - run: |
-          pip3 install meson ninja
-          pip3 install .[test]
-      - run: pytest -s tests
+#  meson-build:
+#    name: 🥷 meson/ninja build
+#    needs: [reuse, c-lint, lua-lint]
+#    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_MESON')"
+#    strategy:
+#      matrix:
+#        compiler: [clang-9, clang-10, clang-11, gcc-7, gcc-8, gcc-9, gcc-10]
+#      fail-fast: false
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-python@v3
+#      - name: Install compiler and dependencies
+#        run: |
+#          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+#          sudo apt-get install --force-yes ${{ matrix.compiler }}
+#          sudo apt-get install --force-yes cmake vim zsh luajit lua-cjson ccache
+#          pip3 install meson ninja
+#      - uses: hendrikmuhs/ccache-action@v1.2
+#      - run: make meson-ccache && ninja -C meson
+#        env:
+#          CC: ${{ matrix.compiler }}
+#      - run: make meson-test
+#
+#  linux-crypto-check:
+#    name: 🐧 Linux crypto tests
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - run: |
+#          sudo apt install zsh jq meson
+#          make linux
+#          make check-crypto
+#
+#  macosx-crypto-check:
+#    name: 🍎 macos crypto tests
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: macos-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.10'
+#      - run: |
+#          pip3 install meson ninja
+#          make osx
+#          make check-osx
+#
+#  go-build-check:
+#    name: 🐹 go build & checks
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_GO')"
+#    strategy:
+#      matrix:
+#        go: ['1.13', '1.14', '1.15', '1.16', '1.19']
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-go@v3
+#        with:
+#          go-version: ${{ matrix.go }}
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.10'
+#      - run: |
+#          pip3 install meson ninja
+#          sudo apt-get install --force-yes zsh
+#      - run: make linux-go
+#      - run: cp meson/libzenroom.so bindings/golang/zenroom/lib
+#      - name: 🧪 test bindings go-${{ matrix.go }}
+#        working-directory: bindings/golang/zenroom
+#        run: make test
+#      - name: 🔐 check crypto with go-${{ matrix.go }}
+#        run: make check-go
+#
+#  rust-build-check:
+#    name: 🦀 rust build & checks
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_RUST')"
+#    strategy:
+#      matrix:
+#        rust: ['stable', 'nightly']
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: dtolnay/rust-toolchain@stable
+#        with:
+#          toolchain: ${{ matrix.rust }}
+#      - run: |
+#          pip3 install meson ninja
+#          sudo apt-get install --force-yes zsh
+#      - run: make linux-rust
+#      - name: 🧪 test bindings rust-${{ matrix.rust }}
+#        working-directory: bindings/rust
+#        run: cargo test
+#      - name: 🔐 check crypto with rust-${{ matrix.rust }}
+#        run: make check-rs
+#
+#  cortex-m-build-check:
+#    name: 📟 cortex-m build & checks
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    if: ${{ contains(github.event.pull_request.labels.*.name, 'run cortex') || contains(github.event.head_commit.message, 'run cortex') }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: numworks/setup-arm-toolchain@2021-10
+#      - run: sudo apt install zsh qemu-system-arm
+#      - name: Download cmsis
+#        run: |
+#          curl -LO https://github.com/ARM-software/CMSIS_5/archive/refs/tags/5.7.0.tar.gz
+#          tar xvf 5.7.0.tar.gz -C lib
+#          mv lib/CMSIS_5-5.7.0 lib/cmsis
+#      - run: make cortex-arm
+#      - name: 🔐 check crypto with cortex-m
+#        run: make check-cortex-m
+#
+#  js-build-check:
+#    name: 🐯 js build & checks
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_JS')"
+#    strategy:
+#      matrix:
+#        node-version: [14.x, 16.x, 18.x]
+#    env:
+#      EM_VERSION: latest
+#    defaults:
+#      run:
+#        working-directory: bindings/javascript
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-node@v3
+#        with:
+#          node-version: ${{ matrix.node-version }}
+#      - uses: mymindstorm/setup-emsdk@v11
+#        with:
+#          version: ${{ env.EM_VERSION }}
+#      - run: sudo apt-get update; sudo apt-get install zsh meson ninja-build
+#      - run: yarn
+#      - run: yarn build
+#        env:
+#          EMSCRIPTEN: ${{ env.EMSDK }}/upstream/emscripten
+#      - if: ${{ matrix.node-version == '16.x' }}
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: javascript-artifact
+#          path: |
+#            ./bindings/javascript/CHANGELOG.md
+#            ./bindings/javascript/LICENSE
+#            ./bindings/javascript/package.json
+#            ./bindings/javascript/README.md
+#            ./bindings/javascript/dist/
+#      - name: 🧪 test bindings node-${{ matrix.node-version }}
+#        run: yarn test
+#      - name: 🔐 check crypto with node-${{ matrix.node-version }}
+#        working-directory: ./
+#        run: make check-js
+#
+#  python-check:
+#    name: 🐍 Python checks
+#    needs: [reuse, c-lint, lua-lint]
+#    if: "!contains(github.event.pull_request.labels.*.name, 'SKIP_PY') && github.event_name == 'pull_request'"
+#    runs-on: ${{ matrix.os }}
+#    defaults:
+#      run:
+#        working-directory: bindings/python3
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os: [ubuntu-latest, macos-latest]
+#        python-version: ["3.8", "3.9", "3.10"]
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#      - run: sudo apt install --force-yes zsh
+#        if: runner.os == 'Linux'
+#      - run: brew install zsh
+#        if: runner.os == 'Darwin'
+#      - run: |
+#          pip3 install meson ninja
+#          pip3 install .[test]
+#      - run: pytest -s tests
 
   semantic-release:
     name: 🤖 Semantic release
@@ -455,7 +455,7 @@ jobs:
 
   pypi-release:
     name: 📦 PyPI release
-    needs: [python-build-check, python-sdist]
+    needs: [python-build-check, python-sdist, python-build-check-armv7]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
