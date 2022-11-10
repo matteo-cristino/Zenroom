@@ -66,10 +66,10 @@ jobs:
           fetch-depth: 0
       - run: |
           # rename local branch
-          git checkout -b master
-          git status
+          # git checkout -b master
+          # git status
           yarn
-          npx semantic-release-github-pr
+          npx semantic-release-github-pr --baseBranch ${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
