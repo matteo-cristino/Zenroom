@@ -328,7 +328,7 @@ jobs:
 
   semantic-release:
     name: 🤖 Semantic release
-    needs: [rust-build-check, go-build-check, meson-build, js-build-check, linux-crypto-check, macosx-crypto-check]
+    needs: [rust-build-check, go-build-check, meson-build, js-build-check] #, linux-crypto-check, macosx-crypto-check]
     runs-on: ubuntu-latest
     if: ${{ github.ref_name == 'master' && github.event_name == 'push' }}
     outputs:
