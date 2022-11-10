@@ -26,6 +26,8 @@ jobs:
     if: "github.event_name == 'pull_request'"
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: amannn/action-semantic-pull-request@v5
         id: lint_pr_title
         env:
@@ -59,7 +61,7 @@ jobs:
           yarn
           echo "${{ github.head_ref }}"
           echo "${{ github.ref }}"
-          npx semantic-release-github-pr --branches ${{ github.ref }}
+          npx semantic-release-github-pr --branches ${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
