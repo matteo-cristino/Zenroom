@@ -20,16 +20,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pr-lint:
+    name: 🚨 PR title lint
+    runs-on: ubuntu-latest
+    if: "github.event_name == 'pull_request'"
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   reuse:
     name: 🚨 REUSE Compliance
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: fsfe/reuse-action@v1
 
   c-lint:
     name: 🚨 C lint
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-cpplint@master
@@ -59,7 +72,9 @@ jobs:
 
   lua-lint:
     name: 🚨 Lua lint
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
     # - uses: dorny/paths-filter@v2
     #   with:
