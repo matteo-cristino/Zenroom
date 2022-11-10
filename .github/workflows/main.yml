@@ -65,6 +65,8 @@ jobs:
           git fetch --prune-tags https://github.com/dyne/Zenroom.git
           yarn
           npx semantic-release-github-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   reuse:
     name: 🚨 REUSE Compliance
@@ -159,30 +161,30 @@ jobs:
           CC: ${{ matrix.compiler }}
       - run: make meson-test
 
-  linux-crypto-check:
-    name: 🐧 Linux crypto tests
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt install zsh jq meson
-          make linux
-          make check-crypto
-
-  macosx-crypto-check:
-    name: 🍎 macos crypto tests
-    needs: [reuse, c-lint, lua-lint]
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: |
-          pip3 install meson ninja
-          make osx
-          make check-osx
+#  linux-crypto-check:
+#    name: 🐧 Linux crypto tests
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - run: |
+#          sudo apt install zsh jq meson
+#          make linux
+#          make check-crypto
+#
+#  macosx-crypto-check:
+#    name: 🍎 macos crypto tests
+#    needs: [reuse, c-lint, lua-lint]
+#    runs-on: macos-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.10'
+#      - run: |
+#          pip3 install meson ninja
+#          make osx
+#          make check-osx
 
   go-build-check:
     name: 🐹 go build & checks

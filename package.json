@@ -2,7 +2,7 @@
     "name": "Zenroom",
     "version": "3.0.0",
     "license": "AGPL-3.0",
-    "repository": "https://github.com/dyne/zenroom",
+    "repository": "https://github.com/matteo-cristino/zenroom",
     "author": "dyne",
     "description": "Secure VM for smart-contract execution in human-like language",
     "devDependencies": {
