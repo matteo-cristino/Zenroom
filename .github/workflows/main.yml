@@ -58,7 +58,6 @@ jobs:
           node-version: 16.x
       - run: |
           yarn
-          echo "${GITHUB_HEAD_REF}"
           git checkout "${GITHUB_HEAD_REF}" && unset GITHUB_ACTIONS && npx semantic-release-github-pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
