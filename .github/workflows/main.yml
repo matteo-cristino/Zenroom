@@ -61,9 +61,10 @@ jobs:
     if: "github.event_name == 'pull_request'"
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - run: |
-          # fetch tags
-          git fetch --prune-tags https://github.com/dyne/Zenroom.git
           # rename local branch
           git checkout -b master
           git status
