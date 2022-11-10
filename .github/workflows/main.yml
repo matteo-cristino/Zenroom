@@ -50,17 +50,6 @@ jobs:
         with:
           header: pr-title-lint-error
           delete: true
-      - name: update versions
-        run: |
-          echo "${{ github.head_ref }}"
-          echo "${{ github.event.pull_request.title }}"
-
-  pr-semantic-release:
-    name: mmh
-    runs-on: ubuntu-latest
-    if: "github.event_name == 'pull_request'"
-    steps:
-      - uses: actions/checkout@v3
       - run: |
           git fetch --prune --unshallow --tags
       - uses: snyk/release-notes-preview@v1.6.2
@@ -68,7 +57,7 @@ jobs:
           releaseBranch: master
         env:
           GITHUB_PR_USERNAME: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
 
   reuse:
     name: 🚨 REUSE Compliance
