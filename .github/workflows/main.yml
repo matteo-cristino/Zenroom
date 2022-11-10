@@ -52,7 +52,7 @@ jobs:
           delete: true
       - name: update versions
         run: |
-          echo ${{ github.event.pull_request.title }}
+          echo "${{ github.event.pull_request.title }}"
 
   pr-semantic-release:
     name: mmh
@@ -63,7 +63,7 @@ jobs:
       - run: |
           # fetch tags
           git fetch --prune-tags https://github.com/dyne/Zenroom.git
-          git tag -l
+          yarn
           npx semantic-release-github-pr
 
   reuse:
