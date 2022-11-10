@@ -27,7 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - uses: amannn/action-semantic-pull-request@v5
         id: lint_pr_title
@@ -58,12 +57,9 @@ jobs:
         with:
           node-version: 16.x
       - run: |
-          # git fetch --prune --unshallow --tags
-          cat .git/HEAD
           yarn
-          echo "${{ github.head_ref }}"
-          echo "${{ github.ref }}"
-          npx semantic-release-github-pr --branches "${{ github.ref }}"
+          echo "${GITHUB_HEAD_REF}"
+          git checkout "${GITHUB_HEAD_REF}" && unset GITHUB_ACTIONS && npx semantic-release-github-pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
