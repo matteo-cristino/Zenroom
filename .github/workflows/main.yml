@@ -63,7 +63,7 @@ jobs:
           yarn
           echo "${{ github.head_ref }}"
           echo "${{ github.ref }}"
-          npx semantic-release-github-pr --branches ${{ github.head_ref }}
+          npx semantic-release-github-pr --branches "${{ github.ref }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
