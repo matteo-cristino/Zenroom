@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - uses: amannn/action-semantic-pull-request@v5
         id: lint_pr_title
