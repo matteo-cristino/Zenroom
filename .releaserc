@@ -15,5 +15,6 @@
         "npmPublish": false
       }
     ]
-  ]
+  ],
+  "branches": ["master", "next"]
 }
