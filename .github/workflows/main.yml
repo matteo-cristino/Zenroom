@@ -50,9 +50,16 @@ jobs:
         with:
           header: pr-title-lint-error
           hide: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
       - run: |
           git fetch --prune --unshallow --tags
-          npx semantic-release-github-pr || exit 0
+          yarn
+          npx semantic-release-github-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   reuse:
     name: 🚨 REUSE Compliance
