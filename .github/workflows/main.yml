@@ -66,9 +66,9 @@ jobs:
       - uses: snyk/release-notes-preview@v1.6.2
         with:
           releaseBranch: master
-          env:
-            GITHUB_PR_USERNAME: ${{ github.actor }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_PR_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   reuse:
     name: 🚨 REUSE Compliance
