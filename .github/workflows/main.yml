@@ -57,7 +57,8 @@ jobs:
       - run: |
           git fetch --prune --unshallow --tags
           yarn
-          npx semantic-release-github-pr
+          echo "${{ github.head_ref }}"
+          npx semantic-release-github-pr --branches ${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
