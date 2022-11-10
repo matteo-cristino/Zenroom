@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 {
   "repositoryUrl": "git@github.com:matteo-cristino/Zenroom.git",
+  "branches": ["+([1-9])?(.{+([1-9]),x}).x", "master", "next"],
   "dryRun": false,
   "plugins": [
     "@semantic-release/commit-analyzer",
@@ -15,6 +16,5 @@
         "npmPublish": false
       }
     ]
-  ],
-  "branches": ["+([1-9])?(.{+([1-9]),x}).x", "master", "next"]
+  ]
 }
