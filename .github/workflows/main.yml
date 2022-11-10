@@ -49,16 +49,10 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-title-lint-error
-          delete: true
+          hide: true
       - run: |
           git fetch --prune --unshallow --tags
-      - uses: snyk/release-notes-preview@v1.6.1
-        id: release-notes-preview
-        with:
-          releaseBranch: master
-        env:
-          GITHUB_PR_USERNAME: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npx semantic-release-github-pr || exit 0
 
   reuse:
     name: 🚨 REUSE Compliance
