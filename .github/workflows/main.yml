@@ -52,12 +52,13 @@ jobs:
           delete: true
       - run: |
           git fetch --prune --unshallow --tags
-      - uses: snyk/release-notes-preview@v1.6.2
+      - uses: snyk/release-notes-preview@v1.6.1
+        id: release-notes-preview
         with:
           releaseBranch: master
         env:
           GITHUB_PR_USERNAME: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   reuse:
     name: 🚨 REUSE Compliance
