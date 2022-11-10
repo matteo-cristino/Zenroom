@@ -65,8 +65,8 @@ jobs:
           # fetch tags
           git fetch --prune-tags https://github.com/dyne/Zenroom.git
           # rename local branch
-          git branch -D master
-          git branch -m master
+          git checkout -b master
+          git status
           yarn
           npx semantic-release-github-pr
         env:
