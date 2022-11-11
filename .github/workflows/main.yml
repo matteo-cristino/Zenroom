@@ -24,7 +24,7 @@ jobs:
   pr-lint:
     name: 🚨 PR title lint
     runs-on: ubuntu-latest
-    if: "github.event_name == 'pull_request'"
+    if: "github.event_name == 'pull_request' && contains('opened, edited, reopened', github.event.action)"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,7 +36,7 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
-          header: ${{ github.workflow }}-pr-title-lint-error
+          header: ${{ github.workflow }}-${{ github.ref_name }}-lint
           message: |
             Hey there and thank you for opening this pull request! 👋🏼
             
@@ -51,7 +51,7 @@ jobs:
       - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          header: ${{ github.workflow }}-pr-title-lint-error
+          header: ${{ github.workflow }}-${{ github.ref_name }}-lint
           delete: true
 
   reuse:
