@@ -58,7 +58,7 @@ jobs:
     name: 🚨 REUSE Compliance
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
+    if: "always() && !failure() && github.event.pull_request.type != 'edited'"
     steps:
       - uses: actions/checkout@v3
       - uses: fsfe/reuse-action@v1
@@ -67,7 +67,7 @@ jobs:
     name: 🚨 C lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
+    if: "always() && !failure() && github.event.pull_request.type != 'edited'"
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-cpplint@master
@@ -99,7 +99,7 @@ jobs:
     name: 🚨 Lua lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
+    if: "always() && !failure() && github.event.pull_request.type != 'edited'"
     steps:
     # - uses: dorny/paths-filter@v2
     #   with:
