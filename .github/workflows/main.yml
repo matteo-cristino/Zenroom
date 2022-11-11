@@ -53,21 +53,12 @@ jobs:
         with:
           header: pr-title-lint-error
           hide: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-      - run: |
-          yarn
-          git checkout "${GITHUB_HEAD_REF}" && unset GITHUB_ACTIONS && npx semantic-release-github-pr
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   reuse:
     name: 🚨 REUSE Compliance
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure()"
+    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
     steps:
       - uses: actions/checkout@v3
       - uses: fsfe/reuse-action@v1
@@ -76,7 +67,7 @@ jobs:
     name: 🚨 C lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure()"
+    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-cpplint@master
@@ -108,7 +99,7 @@ jobs:
     name: 🚨 Lua lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure()"
+    if: "always() && !failure() && github.event.pull_request.title != 'edited'"
     steps:
     # - uses: dorny/paths-filter@v2
     #   with:
