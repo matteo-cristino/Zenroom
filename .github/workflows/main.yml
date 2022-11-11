@@ -36,7 +36,7 @@ jobs:
       - uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
-          header: pr-title-lint-error
+          header: ${{ github.workflow }}-pr-title-lint-error
           message: |
             Hey there and thank you for opening this pull request! 👋🏼
             
@@ -51,16 +51,14 @@ jobs:
       - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          header: pr-title-lint-error
-          hide: true
-          hide_classify: "OUTDATED"
+          header: ${{ github.workflow }}-pr-title-lint-error
+          delete: true
 
   reuse:
     name: 🚨 REUSE Compliance
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.action != 'edited'"
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: fsfe/reuse-action@v1
@@ -69,7 +67,7 @@ jobs:
     name: 🚨 C lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.action != 'edited'"
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-cpplint@master
@@ -101,7 +99,7 @@ jobs:
     name: 🚨 Lua lint
     needs: [pr-lint]
     runs-on: ubuntu-latest
-    if: "always() && !failure() && github.event.action != 'edited'"
+    if: "always() && !failure()"
     steps:
     # - uses: dorny/paths-filter@v2
     #   with:
