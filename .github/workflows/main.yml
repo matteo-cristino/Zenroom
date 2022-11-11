@@ -24,7 +24,7 @@ jobs:
   pr-lint:
     name: 🚨 PR title lint
     runs-on: ubuntu-latest
-    if: "github.event_name == 'pull_request' && contains('opened, edited, reopened', github.event.action)"
+    if: "github.event_name == 'pull_request'"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,7 +33,7 @@ jobs:
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@v2.3.0
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
           header: ${{ github.workflow }}-${{ github.ref_name }}-lint
