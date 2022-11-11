@@ -53,7 +53,8 @@ jobs:
         with:
           header: pr-title-lint-error
           hide: true
-
+      - run: |
+          echo ${{ github.event.pull_request }}
   reuse:
     name: 🚨 REUSE Compliance
     needs: [pr-lint]
