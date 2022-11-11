@@ -37,6 +37,7 @@ jobs:
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
           header: ${{ github.workflow }}-${{ github.ref_name }}-lint
+          number: ${{ github.event.numer }}
           message: |
             Hey there and thank you for opening this pull request! 👋🏼
             
@@ -52,6 +53,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2.3.0
         with:
           header: ${{ github.workflow }}-${{ github.ref_name }}-lint
+          number: ${{ github.event.numer }}
           delete: true
 
   reuse:
