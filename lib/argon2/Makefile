@@ -1,7 +1,7 @@
 # This Makefile can be used with GNU Make or BSD Make
 
 LIB := libargon2.a
-OBJECTS := thread.o  ref.o  opt.o  genkat.o  encoding.o  core.o  bench.o  argon2.o
+OBJECTS := thread.o  ref.o  opt.o  genkat.o  encoding.o  core.o   argon2.o
 RM ?= rm
 CFLAGS := ${CFLAGS} -I.. -I.
 
