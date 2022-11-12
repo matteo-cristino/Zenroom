@@ -54,7 +54,7 @@ javascript-wasm: ${BUILDS}
 	@cp -v src/zenroom.wasm build/wasm/
 
 javascript-npm: cflags  += -O3
-javascript-npm: cflags  += -DARCH_WASM -D'ARCH=\"WASM\"'
+javascript-npm: cflags  += -DARCH_WASM -D'ARCH=\"WASM\"' -msse -msse2 -msimd128
 javascript-npm: ldflags += -s \
 	-s MODULARIZE=1 \
 	-s SINGLE_FILE=1 \
