@@ -195,6 +195,7 @@ jobs:
           version: ${{ env.EM_VERSION }}
       - run: sudo apt-get update; sudo apt-get install zsh meson ninja-build
       - run: yarn
+      - run: uname -m
       - run: yarn build
         env:
           EMSCRIPTEN: ${{ env.EMSDK }}/upstream/emscripten
