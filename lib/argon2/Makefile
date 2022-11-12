@@ -3,7 +3,7 @@
 LIB := libargon2.a
 OBJECTS := thread.o  ref.o  opt.o  genkat.o  encoding.o  core.o  bench.o  argon2.o
 RM ?= rm
-CFLAGS := ${CFLAGS} -msse -march=native -I.. -I.
+CFLAGS := ${CFLAGS} -msse -msse2 -msimd128 -march=native -I.. -I.
 
 all: $(LIB)
 
