@@ -48,6 +48,9 @@ jobs:
       - name: version
         run: |
           git clone https://github.com/dyne/Zenroom.git
+          sudo apt-get install -y tree
+          pwd
+          tree -d -L 2
           git config --global --add safe.directory /home/runner/work/Zenroom/Zenroom
           cd /home/runner/work/Zenroom/Zenroom && ls
           git config --global user.email "fake@test.com"
