@@ -51,8 +51,8 @@ jobs:
           sudo apt-get install -y tree
           pwd
           tree -d -L 2
-          git config --global --add safe.directory /home/runner/work/Zenroom/Zenroom
-          cd /home/runner/work/Zenroom/Zenroom && ls
+          git config --global --add safe.directory /home/runner/work/Zenroom/Zenroom/Zenroom
+          cd /home/runner/work/Zenroom/Zenroom/Zenroom && ls
           git config --global user.email "fake@test.com"
           git config --global user.name "fake user"
           mv VERSION version
