@@ -56,7 +56,7 @@ jobs:
           mv VERSION version
           git add . && git commit -m "${{ github.event.pull_request.title }}"
           yarn
-          npx semantic-release --dryrun
+          npx semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
