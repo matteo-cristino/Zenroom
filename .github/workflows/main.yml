@@ -48,9 +48,6 @@ jobs:
       - name: version
         run: |
           git clone https://github.com/dyne/Zenroom.git
-          sudo apt-get install -y tree
-          pwd
-          tree -d -L 2
           git config --global --add safe.directory /home/runner/work/Zenroom/Zenroom/Zenroom
           cd /home/runner/work/Zenroom/Zenroom/Zenroom && ls
           git config --global user.email "fake@test.com"
@@ -58,7 +55,7 @@ jobs:
           mv VERSION version
           git add . && git commit -m "${{ github.event.pull_request.title }}"
           yarn
-          npx semantic-release --dry-run
+          unset GITHUB_ACTIONS && npx semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
