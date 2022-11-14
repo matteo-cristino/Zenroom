@@ -54,6 +54,7 @@ jobs:
           git config --global user.name "fake user"
           mv VERSION version
           git add . && git commit -m "${{ github.event.pull_request.title }}"
+          git log -n 5
           yarn
           unset GITHUB_ACTIONS && npx semantic-release --dry-run
         env:
