@@ -52,7 +52,7 @@ jobs:
       - name: version
         run: |
           mv VERSION version
-          git add . && git commit -m ${{ github.event.pull_request.title }}
+          git add . && git commit -m "${{ github.event.pull_request.title }}"
           yarn
           npx semantic-release --dryrun
         env:
