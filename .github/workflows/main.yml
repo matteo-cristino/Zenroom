@@ -51,6 +51,8 @@ jobs:
           node-version: 16.x
       - name: version
         run: |
+          git config --global user.email "fake@test.com"
+          git config --global user.name "fake user"
           mv VERSION version
           git add . && git commit -m "${{ github.event.pull_request.title }}"
           yarn
