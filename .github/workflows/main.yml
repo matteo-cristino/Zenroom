@@ -50,12 +50,11 @@ jobs:
           git clone https://github.com/dyne/Zenroom.git
           git config --global --add safe.directory /home/runner/work/Zenroom/Zenroom/Zenroom
           cd /home/runner/work/Zenroom/Zenroom/Zenroom
-          git fetch origin --tags
+          git tag -l
           git config --global user.email "fake@test.com"
           git config --global user.name "fake user"
           mv VERSION version
           git add . && git commit -m "${{ github.event.pull_request.title }}"
-          git log -n 5
           yarn
           unset GITHUB_ACTIONS && npx semantic-release --dry-run
         env:
