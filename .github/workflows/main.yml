@@ -14,15 +14,79 @@ on:
       - '*.md'
     branches:
       - master
+    types: ['opened', 'synchronize', 'reopened', 'edited']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
+  pr-lint:
+    name: 🚨 PR title lint
+    runs-on: ubuntu-latest
+    if: "github.event_name == 'pull_request' && github.event.action != 'synchronize'"
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        id: lint_pr_title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: thollander/actions-comment-pull-request@v1
+        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+        with:
+          message: |
+            Hey there and thank you for opening this pull request! 👋🏼
+            
+            We require pull request titles to follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) and it looks like your proposed title needs to be adjusted.
+            Details 🔍:
+            
+            ```
+            ${{ steps.lint_pr_title.outputs.error_message }}
+      - uses: actions/checkout@v3
+        with:
+          name: dyne/zenroom
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: version
+        run: |
+          mv VERSION version
+          git add . && git commit -m ${{ github.event.pull_request.title }}
+          yarn
+          npx semantic-release --dryrun
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            Weel done, pull request's title follow the Conventional Commits specification 🚀
+#      - uses: marocchino/sticky-pull-request-comment@v2
+#        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+#        with:
+#          header: ${{ github.workflow }}-${{ github.ref_name }}-lint
+#          message: |
+#            Hey there and thank you for opening this pull request! 👋🏼
+#            
+#            We require pull request titles to follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) and it looks like your proposed title needs to be adjusted.
+#            Details 🔍:
+#            
+#            ```
+#            ${{ steps.lint_pr_title.outputs.error_message }}
+#            ```
+#      # Delete a previous comment when the issue has been resolved
+#      - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        with:
+#          header: ${{ github.workflow }}-${{ github.ref_name }}-lint
+#          delete: true
+
   reuse:
     name: 🚨 REUSE Compliance
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: fsfe/reuse-action@v1
@@ -30,7 +94,9 @@ jobs:
 
   c-lint:
     name: 🚨 C lint
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-cpplint@master
@@ -60,7 +126,9 @@ jobs:
 
   lua-lint:
     name: 🚨 Lua lint
+    needs: [pr-lint]
     runs-on: ubuntu-latest
+    if: "always() && !failure()"
     steps:
     # - uses: dorny/paths-filter@v2
     #   with:
