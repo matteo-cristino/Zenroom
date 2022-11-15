@@ -3,9 +3,6 @@
 LIB := libargon2.a
 OBJECTS := thread.o  ref.o  opt.o  genkat.o  encoding.o  core.o  argon2.o
 RM ?= rm
-ifneq (,$(findstring javascript,$(MAKECMDGOALS)))
-CFLAGS += -msse -msse2 -msimd128
-endif
 CFLAGS := ${CFLAGS} -I.. -I.
 
 all: $(LIB)
