@@ -219,7 +219,7 @@ ranlib := ${EMSCRIPTEN}/emranlib
 system:= Javascript
 # lua_embed_opts := "compile"
 ldflags := -s "EXPORTED_FUNCTIONS='[\"_zenroom_exec\",\"_zencode_exec\",\"_zenroom_hash_init\",\"_zenroom_hash_update\",\"_zenroom_hash_final\"]'" -s "EXPORTED_RUNTIME_METHODS='[\"ccall\",\"cwrap\",\"printErr\",\"print\"]'" -s USE_SDL=0 -s USE_PTHREADS=0 -lm
-cflags := -O2 -Wall -I ${EMSCRIPTEN}/system/include/libc -DLIBRARY ${defines} -msse -msse2 -msimd128
+cflags := -O2 -Wall -I ${EMSCRIPTEN}/system/include/libc -DLIBRARY ${defines} -Wno-implicit-function-declaration -msse2 -msimd128 -experimental-wasm-simd
 endif
 
 ifneq (,$(findstring esp32,$(MAKECMDGOALS)))

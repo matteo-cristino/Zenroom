@@ -196,7 +196,7 @@ argon2:
 	$(info -- Building Argon2)
 	CC="${argon2_cc}" \
 	AR=${ar} \
-	CFLAGS="${cflags}" \
+	CFLAGS="${cflags} -DARGON2_NO_THREADS" \
 	LDFLAGS="${ldflags}" \
 	$(MAKE) -C ${pwd}/lib/argon2
 
