@@ -1,4 +1,4 @@
-from zenroom.zenroom import (
+from personal_zenroom.zenroom import (
     ZenResult,
     zencode_exec,
     zenroom_exec,

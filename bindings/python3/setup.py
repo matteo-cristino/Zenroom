@@ -72,7 +72,7 @@ subprocess.check_call(['make', 'meson'])
 python_version, zenroom_version = get_versions()
 os.chdir(PYTHON_ROOT)
 
-zenroom_lib = Extension('zenroom',
+zenroom_lib = Extension('personal_zenroom',
                         sources=[
                             os.path.join(ZENROOM_LIB_ROOT_REL, src)
                             for src in ZENROOM_SOURCES
@@ -129,7 +129,7 @@ def get_readme():
 
 
 setup(
-    name='zenroom',
+    name='personal_zenroom',
     description='Zenroom for Python: Bindings of Zenroom library for Python.',
     version=python_version,
     long_description=get_readme(),
@@ -137,8 +137,8 @@ setup(
     license = 'AGPLv3',
     keywords = 'zenroom crypto-language-processing virtual-machine blockchain crypto ecc dyne ecdh ecdsa zero-knowledge-proofs javascript npm ecp2 miller-loop hamming-distance elgamal aes-gcm aead seccomp goldilocks'.split(),
     url='https://github.com/dyne/Zenroom',
-    author='Danilo Spinella, David Dashyan, Puria Nafisi Azizi',
-    author_email='danyspin@dyne.org, mail@davie.li, puria@dyne.org',
+    author='bla',
+    author_email='bla@bla.org',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
@@ -158,7 +158,7 @@ setup(
         'Source Code': 'https://github.com/dyne/Zenroom',
         'Documentation': 'https://dev.zenroom.org/',
     },
-    packages=['zenroom'],
+    packages=['personal_zenroom'],
     include_package_data=True,
     ext_modules=[zenroom_lib],
     python_requires='>=3.8, <4',

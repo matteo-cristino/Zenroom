@@ -5,7 +5,7 @@ import json
 import ctypes as ct
 from dataclasses import dataclass, field
 
-from zenroom._config import LIBZENROOM_LOC
+from personal_zenroom._config import LIBZENROOM_LOC
 
 
 _LIBZENROOM = ct.CDLL(str(LIBZENROOM_LOC))

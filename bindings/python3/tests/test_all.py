@@ -1,6 +1,6 @@
 import pytest
 from schema import Schema, Regex
-from zenroom import zenroom_exec, zencode_exec
+from personal_zenroom import zenroom_exec, zencode_exec
 
 
 def test_zencode_call_random_array():
