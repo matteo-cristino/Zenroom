@@ -275,6 +275,9 @@ jobs:
       - run: brew install zsh
         if: runner.os == 'macOS'
       - run: |
+          meson --version
+          ninja --version
+      - run: |
           ./prepare.sh
           pip3 install meson ninja
           pip3 install .[test]
