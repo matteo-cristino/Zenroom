@@ -44,7 +44,7 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
-          CIBW_BEFORE_BUILD_LINUX: sudo apt-get update && sudo apt-get install -y cmake zsh
+          CIBW_BEFORE_BUILD_LINUX: apt-get update && apt-get install -y cmake zsh
           CIBW_BEFORE_BUILD_MACOS: brew install cmake zsh
           CIBW_TEST_EXTRAS: "test"
           CIBW_TEST_COMMAND: "pytest -s {project}/tests"
@@ -96,9 +96,9 @@ jobs:
             fi
             apt-get install -y python3-pip python3-venv && python3 -m pip install --upgrade pip
             python3 -m pip install pipx
-            pipx install meson
-            pipx install ninja
-            pipx install pytest
+            pip3 install meson
+            pip3 install ninja
+            pip3 install pytest
             pip3 install wheel
             pip3 install schema
             # build
