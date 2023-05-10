@@ -36,6 +36,8 @@ jobs:
           echo "################"
           echo $PATH
           which meson
+          whereis meson
+          pip3 show meson
           echo "################"
           pip3 install .[test]
       - run: pytest -s tests
