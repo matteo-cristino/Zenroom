@@ -35,7 +35,7 @@ jobs:
           ./prepare.sh
           pipx install meson
           pipx install ninja
-          pipx install .[test]
+          pip3 install .[test]
       - run: pytest -s tests
 
   python-build-check:
@@ -140,7 +140,7 @@ jobs:
             python3 setup.py bdist_wheel
             mkdir ../../wheelhouse && cp dist/*.whl ../../wheelhouse
             # tests
-            pipx install ./dist/*.whl
+            pip3 install ./dist/*.whl
             pytest -s tests
       - uses: actions/upload-artifact@v3
         with:
