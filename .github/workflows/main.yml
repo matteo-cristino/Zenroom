@@ -44,7 +44,7 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
-          CIBW_BEFORE_BUILD_LINUX: apt update && apt install -y cmake zsh vim
+          CIBW_BEFORE_BUILD_LINUX: sudo apt-get update && sudo apt-get install -y cmake zsh
           CIBW_BEFORE_BUILD_MACOS: brew install cmake zsh
           CIBW_TEST_EXTRAS: "test"
           CIBW_TEST_COMMAND: "pytest -s {project}/tests"
