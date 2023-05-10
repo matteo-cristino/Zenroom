@@ -125,13 +125,13 @@ jobs:
               update-alternatives --install $py_3 python3 $py 2
               update-alternatives --set python3 $py
             fi
-            apt-get install -y python3-pip && python3 -m pip install --upgrade pip
+            apt-get install -y python3-pip python3-venv && python3 -m pip install --upgrade pip
             python3 -m pip install pipx
             pipx install meson
             pipx install ninja
-            pipx install wheel
             pipx install pytest
-            pipx install schema
+            pip3 install wheel
+            pip3 install schema
             # build
             rm -f bindings/golang/zenroom/lib/libzenroom.so
             cd bindings/python3
