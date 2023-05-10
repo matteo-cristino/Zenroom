@@ -33,5 +33,8 @@ jobs:
           ./prepare.sh
           pip install --upgrade pip
           pip3 install ninja meson
+          echo "################"
+          echo $PATH
+          echo "################"
           pip3 install .[test]
       - run: pytest -s tests
