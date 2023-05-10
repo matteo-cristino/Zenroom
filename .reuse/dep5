@@ -19,10 +19,6 @@ Files: lib/pqclean/*
 Copyright: Léo Ducas, Eike Kiltz, Tancrède Lepoint, Vadim Lyubashevsky, Gregor Seiler, Peter Schwabe, Damien Stehlé
 License: CC0-1.0
 
-Files: lib/zstd/*
-Copyright: Copyright (c) 2016-present, Facebook, Inc.
-License: BSD-3-Clause
-
 Files: lib/ed25519-donna/*
 Copyright: Andrew M. <liquidsun@gmail.com>
 License: CC0-1.0
