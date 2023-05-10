@@ -32,12 +32,12 @@ jobs:
       - run: |
           ./prepare.sh
           pip install --upgrade pip
-          pip3 install ninja meson
+          python -m pip install ninja meson
           echo "################"
           echo $PATH
           which meson
           whereis meson
-          pip3 show meson
+          pip show meson
           echo "################"
           pip3 install .[test]
       - run: pytest -s tests
