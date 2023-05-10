@@ -125,8 +125,7 @@ jobs:
               update-alternatives --install $py_3 python3 $py 2
               update-alternatives --set python3 $py
             fi
-            apt-get install -y python3-pip
-            python3 -m pip install --upgrade pip
+            apt-get install -y python3-pip && python3 -m pip install --upgrade pip
             python3 -m pip install pipx
             pipx install meson
             pipx install ninja
