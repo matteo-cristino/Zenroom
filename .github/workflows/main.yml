@@ -31,6 +31,6 @@ jobs:
         if: runner.os == 'macOS'
       - run: |
           ./prepare.sh
-          pip3 install meson ninja meson-python
+          pip3 install ninja meson-python
           pip3 install .[test]
       - run: pytest -s tests
