@@ -7,37 +7,6 @@ on:
       - '*.md'
 
 jobs:
-  python-check:
-    name: 🐍 Python checks
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        working-directory: bindings/python3
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10"]
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: |
-          sudo apt update
-          sudo apt install -y zsh cmake
-        if: runner.os == 'Linux'
-      - run: brew install zsh
-        if: runner.os == 'macOS'
-      - run: |
-          ./prepare.sh
-          pipx install meson
-          pipx install ninja
-          pip3 install .[test]
-      - run: pytest -s tests
-
   python-build-check:
     name: 🐍 Python build & checks
     runs-on: ${{ matrix.os }}
@@ -75,7 +44,7 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
-          CIBW_BEFORE_BUILD_LINUX: apt-get update && apt-get install -y cmake zsh vim
+          CIBW_BEFORE_BUILD_LINUX: apt update && apt install -y cmake zsh vim
           CIBW_BEFORE_BUILD_MACOS: brew install cmake zsh
           CIBW_TEST_EXTRAS: "test"
           CIBW_TEST_COMMAND: "pytest -s {project}/tests"
@@ -144,26 +113,3 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
-
-  python-sdist:
-    name: 🐍 Python create source distribution
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: bindings/python3
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: master
-        fetch-depth: 0
-    - run: |
-        sudo apt-get install --force-yes cmake vim zsh
-        pipx install meson 
-        pipx install ninja
-        pipx install twine
-        ./prepare.sh
-    - run: pipx run build --sdist
-    - run: twine check dist/*.tar.gz
-    - uses: actions/upload-artifact@v3
-      with:
-        path: ./bindings/python3/dist/*.tar.gz
