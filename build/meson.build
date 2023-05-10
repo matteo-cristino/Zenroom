@@ -40,7 +40,6 @@ add_project_link_arguments(
     'milagro-crypto-c/lib/libamcl_pairing_' + ecp_curve + '.a',
     'milagro-crypto-c/lib/libamcl_curve_' + ecp_curve + '.a',
     'liblua.a',
-    'libzstd.a',
     'libqpz.a',
     'libed25519.a',
 	'libblake2.a',
@@ -55,8 +54,6 @@ milagro_include_dirs = include_directories('../lib/milagro-crypto-c/include')
 milagro_generated_include_dirs = include_directories('milagro-crypto-c/include')
 
 mimalloc_include_dirs = include_directories('../lib/mimalloc/include')
-
-zstd_include_dirs = include_directories('../lib/zstd')
 
 lua_include_dirs = include_directories('../lib/lua53/src')
 
@@ -106,7 +103,6 @@ zenroom_lib = library(
         zenroom_include_dirs,
         milagro_include_dirs,
         milagro_generated_include_dirs,
-        zstd_include_dirs,
 	ed25519_include_dirs,
 	blake2_include_dirs,
         lua_include_dirs,
@@ -124,7 +120,6 @@ zenroom_dep = declare_dependency(
         zenroom_include_dirs,
         milagro_include_dirs,
         milagro_generated_include_dirs,
-        zstd_include_dirs,
 	ed25519_include_dirs,
 	blake2_include_dirs,
         lua_include_dirs,
