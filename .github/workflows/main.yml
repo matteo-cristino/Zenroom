@@ -33,7 +33,8 @@ jobs:
         if: runner.os == 'macOS'
       - run: |
           ./prepare.sh
-          pipx inject ninja meson
+          pipx install meson
+          pipx install ninja
           pip3 install .[test]
       - run: pytest -s tests
 
@@ -74,8 +75,8 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_I686_IMAGE: manylinux_2_24
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_24
-          CIBW_BEFORE_BUILD_LINUX: apt-get update && apt-get install -y cmake zsh vim && pipx inject meson ninja
-          CIBW_BEFORE_BUILD_MACOS: brew install cmake zsh && pipx inject meson ninja
+          CIBW_BEFORE_BUILD_LINUX: apt-get update && apt-get install -y cmake zsh vim
+          CIBW_BEFORE_BUILD_MACOS: brew install cmake zsh
           CIBW_TEST_EXTRAS: "test"
           CIBW_TEST_COMMAND: "pytest -s {project}/tests"
         run: |
@@ -83,6 +84,8 @@ jobs:
           rm -f bindings/golang/zenroom/lib/libzenroom.so
           cd bindings/python3
           ./prepare.sh
+          pipx install meson 
+          pipx install ninja
           pip install cibuildwheel
           cibuildwheel --output-dir wheelhouse
       - uses: actions/upload-artifact@v3
@@ -123,7 +126,9 @@ jobs:
               update-alternatives --set python3 $py
             fi
             apt-get install -y python3-pip && python3 -m pip install --upgrade pip
-            pipx inject meson ninja wheel pytest schema
+            pipx install meson 
+            pipx install ninja 
+            pip3 install wheel pytest schema
             # build
             rm -f bindings/golang/zenroom/lib/libzenroom.so
             cd bindings/python3
@@ -131,7 +136,7 @@ jobs:
             python3 setup.py bdist_wheel
             mkdir ../../wheelhouse && cp dist/*.whl ../../wheelhouse
             # tests
-            pip install ./dist/*.whl
+            pip3 install ./dist/*.whl
             pytest -s tests
       - uses: actions/upload-artifact@v3
         with:
@@ -150,7 +155,9 @@ jobs:
         fetch-depth: 0
     - run: |
         sudo apt-get install --force-yes cmake vim zsh
-        pipx inject meson ninja twine
+        pipx install meson 
+        pipx install ninja
+        pipx install twine
         ./prepare.sh
     - run: pipx run build --sdist
     - run: twine check dist/*.tar.gz
