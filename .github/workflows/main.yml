@@ -6,7 +6,7 @@ on:
       - 'examples/**'
       - '*.md'
 
-jobs: 
+jobs:
   python-check:
     name: 🐍 Python checks
     runs-on: ${{ matrix.os }}
@@ -17,19 +17,19 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: ${{ matrix.python-version }}
       - run: sudo apt-get install -y zsh meson ninja-build
         if: runner.os == 'Linux'
       - run: brew install zsh meson ninja
         if: runner.os == 'macOS'
       - run: |
-          pip install --upgrade pip
           ./prepare.sh
           pip3 install .[test]
       - run: pytest -s tests
