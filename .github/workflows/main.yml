@@ -35,6 +35,7 @@ jobs:
           pip3 install ninja meson
           echo "################"
           echo $PATH
+          which meson
           echo "################"
           pip3 install .[test]
       - run: pytest -s tests
