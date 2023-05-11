@@ -39,7 +39,6 @@ jobs:
           CIBW_TEST_EXTRAS: "test"
           CIBW_TEST_COMMAND: "pytest -s {project}/tests"
         run: |
-          sudo echo 'deb http://security.debian.org/debian-security stable-security/updates main' >> /etc/apt/sources.list
           # Remove shared library
           rm -f bindings/golang/zenroom/lib/libzenroom.so
           cd bindings/python3
