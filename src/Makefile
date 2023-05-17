@@ -16,12 +16,11 @@
 #  along with this program.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
-ZENROOM_VERSION := $(shell git describe --tags | cut -d- -f1)
 CC ?= gcc
 # ARCH := $(shell uname -m)
 BRANCH := $(shell git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 COMMIT := $(shell git rev-parse --short HEAD)
-VERSION := ${ZENROOM_VERSION}
+VERSION := $(shell git describe --tags | cut -d- -f1)
 CFLAGS  += -I. -I../lib/lua53/src \
 	-I../lib/milagro-crypto-c/build/include \
 	-I../lib/milagro-crypto-c/include \

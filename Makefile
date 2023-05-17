@@ -7,7 +7,6 @@ pwd := $(shell pwd)
 # ARCH ?=$(shell uname -m)
 PREFIX ?= /usr/local
 # VERSION is set in src/Makefile
-VERSION := $(shell awk '/ZENROOM_VERSION :=/ { print $$3; exit }' src/Makefile | tee VERSION)
 # Targets to be build in this order
 BUILDS := apply-patches milagro lua53 embed-lua quantum-proof ed25519-donna mimalloc blake2
 
