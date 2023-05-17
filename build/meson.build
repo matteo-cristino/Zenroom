@@ -12,6 +12,7 @@ project(
 
 add_project_arguments(
     '-DVERSION="' + meson.project_version() +'"',
+	'-DCOMMIT="' + run_command(['git', 'rev-parse', '--short', 'HEAD'], capture: true, check : true).stdout().strip() +'"',
     '-D_POSIX_C_SOURCE=200112L',
     '-D_DARWIN_C_SOURCE',
     language: 'c'
