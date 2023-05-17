@@ -1,7 +1,7 @@
 project(
     'zenroom',
     'c',
-    version: '3.0.0-devel',
+    version: run_command(['git', 'describe', '--tags'], capture : true, check : true).stdout().split('-')[0],
     license: 'GPL3',
      meson_version: '>=0.49.2',
     default_options: [
@@ -11,7 +11,7 @@ project(
 )
 
 add_project_arguments(
-    '-DVERSION="' + meson.project_version() + '"',
+    '-DVERSION="' + meson.project_version() +'"',
     '-D_POSIX_C_SOURCE=200112L',
     '-D_DARWIN_C_SOURCE',
     language: 'c'
