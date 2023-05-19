@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 {
-  "repositoryUrl": "git@github.com:dyne/Zenroom.git",
+  "repositoryUrl": "git@github.com:matteo-cristino/Zenroom.git",
   "dryRun": false,
   "plugins": [
     "@semantic-release/commit-analyzer",

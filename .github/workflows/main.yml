@@ -322,7 +322,7 @@ jobs:
             echo "release=False" >> $GITHUB_OUTPUT
           else
             echo "release=True" >> $GITHUB_OUTPUT
-            awk '/Published release/ { printf("version=v%s\n",$8) }' semantic-release.log >> $GITHUB_OUTPUT
+            awk '/Published release/ { printf("version=v%s",$8) }' semantic-release.log >> $GITHUB_OUTPUT
           fi
 
   python-build-check:
@@ -381,6 +381,7 @@ jobs:
           rm -f bindings/golang/zenroom/lib/libzenroom.so
           cd bindings/python3
           ./prepare.sh
+          cp -r ../../.git .
           pip install cibuildwheel
           cibuildwheel --output-dir wheelhouse
       - uses: actions/upload-artifact@v3
@@ -460,45 +461,6 @@ jobs:
       with:
         path: ./bindings/python3/dist/*.tar.gz
 
-  npm-release:
-    name: 📦 npm release
-    runs-on: ubuntu-latest
-    needs: [semantic-release]
-    if: ${{ needs.semantic-release.outputs.release == 'True' }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: master
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          registry-url: 'https://registry.npmjs.org'
-      - uses: actions/download-artifact@v3
-        with:
-          name: javascript-artifact
-          path: .
-      - run: |
-          version=$(git describe --tags --abbrev=0)
-          yarn version --new-version ${version:1} --no-git-tag-version
-      - run: npm publish . --tag latest
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  pypi-release:
-    name: 📦 PyPI release
-    needs: [python-build-check, python-build-check-armv7, python-sdist]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-          path: dist
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-
   build-release-on-ubuntu:
     name: 🐧 Binary builds on Ubuntu
     runs-on: ubuntu-latest
@@ -553,28 +515,3 @@ jobs:
             src/zenroom.exe
             src/libzenroom_dll.lib
             src/zenroom.dll
-
-  draft-binary-release:
-    name: 📦 Pack release
-    needs: [semantic-release, build-release-on-ubuntu]
-    runs-on: ubuntu-latest
-    steps:
-      - name: download binary artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: |
-            zenroom-bin
-      - name: show directory structure
-        run: tree -dL 3
-      - name: relase all binary artifacts
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            zenroom-bin/release*/*
-          tag_name: ${{ needs.semantic-release.outputs.version }}
-          body_path: zenroom-bin/documentation/release-intro.md
-          append_body: true
-          draft: false
-          prerelease: false
-          fail_on_unmatched_files: true
-          generate_release_notes: true
