@@ -1,7 +1,7 @@
 project(
     'zenroom',
     'c',
-    version: run_command(['git', 'describe', '--tags'], capture : true, check : true).stdout().split('-')[0],
+    version: run_command(['git', 'describe', '--tags'], capture : true, check : true).stdout().split('-')[0].strip(),
     license: 'GPL3',
      meson_version: '>=0.49.2',
     default_options: [
