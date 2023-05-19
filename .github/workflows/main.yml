@@ -13,18 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: [38, 39, 310, 311]
-        platform_id: [manylinux_x86_64, manylinux_i686, manylinux_aarch64, macosx_x86_64]
-        exclude:
-          - os: macos-latest
-            platform_id: manylinux_x86_64
-          - os: macos-latest
-            platform_id: manylinux_i686
-          - os: macos-latest
-            platform_id: manylinux_aarch64
-          - os: ubuntu-latest
-            platform_id: macosx_x86_64
+        platform_id: [manylinux_x86_64]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -60,61 +51,9 @@ jobs:
           rm -f bindings/golang/zenroom/lib/libzenroom.so
           cd bindings/python3
           ./prepare.sh
+          cp -r ../../.git .
           pip install cibuildwheel
           cibuildwheel --output-dir wheelhouse
       - uses: actions/upload-artifact@v3
         with:
           path: ./bindings/python3/wheelhouse/*.whl
-
-  build-release-on-ubuntu:
-    name: 🐧 Binary builds on Ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Upload release docs artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentation
-          path: |
-            build/release-intro.md
-      - name: Install build deps
-        run: |
-          sudo apt install zsh tree jq cmake make gcc g++ musl-dev meson clang gcc-mingw-w64 g++-mingw-w64
-      - name: Build mimalloc
-        run: make mimalloc
-      - name: Build x86_64 with musl-system
-        run: make musl-system
-      - name: Upload artifact linux-amd64
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-bin-linux-amd64
-          path: |
-            src/zenroom
-      - name: Clean for next build
-        run: make clean
-      - name: Build x86_64 shlib
-        run: make linux-meson-clang-release
-      - name: Upload artifact linux-lib-amd64
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-lib-linux-amd64
-          path: |
-            meson/libzenroom.a
-            meson/libzenroom.so
-      - name: Clean for next build
-        run: make clean
-      - name: Build x86_64 windows .exe
-        run: |
-          make win
-          make win-dll
-      - name: Upload artifact win x86_64
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-exe-win-w64
-          path: |
-            src/zenroom.exe
-            src/libzenroom_dll.lib
-            src/zenroom.dll
