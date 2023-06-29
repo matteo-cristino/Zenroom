@@ -529,6 +529,7 @@ jobs:
           name: release-bin-linux-amd64
           path: |
             src/zenroom
+            src/zencode-exec
       - name: Clean for next build
         run: make clean
       - name: Build x86_64 shlib
@@ -552,6 +553,7 @@ jobs:
           name: release-exe-win-w64
           path: |
             src/zenroom.exe
+            src/zencode-exec.exe
             src/libzenroom_dll.lib
             src/zenroom.dll
 
