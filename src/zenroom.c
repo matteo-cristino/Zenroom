@@ -336,14 +336,19 @@ int zen_exec_zencode(zenroom_t *ZZ, const char *script) {
 	lua_State* L = (lua_State*)ZZ->lua;
 	// introspection on code being executed
 	zen_setenv(L,"CODE",(char*)script);
+	printf("%s\n", script);
 	ret = luaL_dostring
 	  (L,
 	   "local _res, _err\n"
 	   "_res, _err = pcall( function() ZEN:begin() end)\n"
 	   "if not _res then exitcode(4) ZEN.OK = false error('INIT: '.._err,2) end\n"
 	   "if OCTET.is_base64(CODE) then\n"
+	   "  I.spy('isbase64')\n"
+	   "  I.spy(CODE)\n"
+	   "  I.spy(OCTET.from_base64(CODE):str())\n"
 	   "  _res, _err = pcall( function() ZEN:parse(OCTET.from_base64(CODE):str()) end)\n"
 	   "else _res, _err = pcall( function() ZEN:parse(CODE) end) end\n"
+	   "I.spy(CODE)"
 	   "if not _res then exitcode(3) ZEN.OK = false error('PARSE: '.._err,2) end\n"
 	   "_res, _err = pcall( function() ZEN:run() end)\n"
 	   "if not _res then exitcode(2) ZEN.OK = false error('EXEC: '.._err,2) end\n"
