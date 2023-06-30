@@ -86,10 +86,10 @@ test("handle broken zencode", async (t) => {
   try {
     await zencode_exec(`sapodksapodk`);
   } catch (e) {
-    console.log(e.logs)
+    b64_decoded = Buffer.from('sapodksapodk', 'base64').toString()
     t.true(
       e.logs.includes(
-        `Invalid Zencode line 1: 'sapodksapodk'`
+        `Invalid Zencode line 1: '${b64_decoded}'`
       )
     );
   }
