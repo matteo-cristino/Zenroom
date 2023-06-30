@@ -86,6 +86,7 @@ test("handle broken zencode", async (t) => {
   try {
     await zencode_exec(`sapodksapodk`);
   } catch (e) {
+    console.log(e.logs)
     t.true(
       e.logs.includes(
         `Invalid Zencode line 1: 'sapodksapodk'`
