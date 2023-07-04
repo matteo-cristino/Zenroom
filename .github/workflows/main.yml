@@ -641,6 +641,4 @@ jobs:
           tag_name: ${{ needs.semantic-release.outputs.version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           delete_release: false
-          repo: dyne/zenroom
-
-
+          repo: matteo-cristino/zenroom
