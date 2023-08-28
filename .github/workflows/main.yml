@@ -120,7 +120,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: install dependencies
-        run: sudo apt install -y zsh jq
+        run: sudo apt install -y zsh jq musl-dev meson
       - name: Build mimalloc
         run: make mimalloc
       - name: Build x86_64 with musl-system
