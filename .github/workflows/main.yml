@@ -27,5 +27,5 @@ jobs:
       - uses: pguyot/arm-runner-action@v2
         with:
           commands: |
-            sudo apt install -yq jq musl-tools musl-dev libreadline-dev cmake
+            sudo apt install -yq jq musl-tools musl-dev libreadline-dev cmake xxd
             make -f build/linux.mk
