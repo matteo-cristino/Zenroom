@@ -419,3 +419,151 @@ function pick_from_path(path)
     end
     return res, dest
 end
+
+--[[
+local function move_or_copy_to(src, dest, enc)
+    empty(dest)
+    if not enc then
+        ACK[dest] = deepcopy(ACK[src])
+        new_codec(dest, { }, src)
+    else
+        ACK[dest] = apply_encoding(src, enc, "string")
+        new_codec(dest, { encoding = 'string' })
+    end
+end
+--]]
+local num_encoding = {
+    string = function(n) return n:str() end,
+    integer = function(n) return n:decimal() end,
+    float = function(n) return n:__tostring() end
+}
+
+local function _zenroom_have(root, root_codec, obj, opts)
+    local prev = root
+    local source_name = root_codec.name
+    local source_zentype = root_codec.zentype
+    local res
+    for _, v in ipairs(obj) do
+        local k, c = mayhave(v)
+        -- source is array
+        if isarray(prev) then
+            if k then
+                local fn = num_encoding[c.encoding]
+                if not fn then error("Unsupported encoding: "..c.encoding, 2) end
+                k = fn(k)
+            else
+                k = v
+            end
+            k = tonumber(k)
+            if not k then
+                error("Invalid array index: "..k, 2)
+            end
+            source_zentype = 'a'
+        else
+            if k then
+                if not c.encoding then
+                    error("Dictionary key encoding must be present", 2)
+                elseif c.encoding ~= 'string' then
+                    error("Dictionary key encoding must be string, found: "..c.encoding, 2)
+                end
+                k = k:str()
+            else
+                k = v
+            end
+            source_zentype = 'd'
+        end
+        if not prev[k] then
+            error("Cannot find object: "..v.." in "..source_name, 2)
+        end
+        if next(obj,_) == nil then
+            res = prev[k]
+            if opts and opts.remove then
+                if source_zentype == 'a' then
+                    table.remove(prev, k)
+                else
+                    prev[k] = nil
+                end
+            end
+        end
+        source_name = v
+    end
+    return res, source_name, source_zentype
+end
+
+-- utility to copy or move stuff in zenroom memory
+-- @param src table (path to element)
+-- @param dest table (path to element)
+-- @param opts table that can contain encoding and if to remove element
+function copy_move(src, dest, opts)
+    -- check for input format
+    if luatype(src) ~= 'table' or next(src,_) == nil then
+        error("Source path must be a non-empty table", 2)
+    end
+    if luatype(dest) ~= 'table' or next(dest,_) == nil then
+        error("Destination path must be a non-empty table", 2)
+    end
+
+    local src_name = table.remove(src, 1)
+    local el = have(src_name)
+    local src_root_codec = CODEC[src_name]
+    if #src == 0 then
+        if opts and opts.remove then
+            ACK[src_name] = nil
+            CODEC[src_name] = nil
+        end
+    else
+        el, src_name = _zenroom_have(el, src_root_codec, src, opts)
+    end
+
+    local dest_length = #dest
+    local d_el
+    local new_name
+    local dest_zentype = 'd'
+    local dest_name = 'ACK'
+    local new_codec_needed = false
+    if dest_length == 0 then
+        error("Destination path is empty", 2)
+    else
+        new_name = table.remove(dest)
+        if dest_length == 1 then
+            d_el = ACK
+            new_codec_needed = true
+        else
+            local cdest = CODEC[dest[1]]
+            if cdest.schema then
+                local sdest = ZEN.schemas[cdest.schema]
+                local is_extra_object = cdest.zentype == 'e' or dest_length > 2
+                if sdest.schematype ~= 'open' and is_extra_object then
+                    error("Schema is not open to accept extra objects: "..dest[1], 2)
+                end
+            end
+            d_el, dest_name, dest_zentype = _zenroom_have(dest)
+            if luatype(d_el) ~= 'table' then
+                error("Destination object is not a table: "..dest_name, 2)
+            end
+        end
+    end
+
+    -- empty dest
+    if d_el[new_name] then
+        error("Cannot overwrite: "..new_name.." in "..dest_name,2)
+    end
+
+    -- insert object
+    if dest_zentype == 'd' then
+        d_el[new_name] = deepcopy(el)
+    else
+        table.insert(d_el, deepcopy(el))
+    end
+
+    -- codec
+    if new_codec_needed then
+        local n_codec = { encoding = src_root_codec.encoding }
+        -- table of schemas can only contain elements
+        if src_root_codec.schema then
+            n_codec.schema = src_root_codec.schema
+            n_codec.zentype = "e"
+        end
+        new_codec(new_name, n_codec)
+    end
+end
