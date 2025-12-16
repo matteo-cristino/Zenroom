@@ -44,7 +44,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
           targets: --recursive src
-          level: warning
+          level: info
           flags: --linelength=120 # Optional
           filter: "-readability/braces\
             ,-readability/casting\
